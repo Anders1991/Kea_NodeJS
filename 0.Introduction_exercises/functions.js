@@ -10,3 +10,5 @@ function doActionWithSomeoneReturn(anyFunctionReference, name) {
 
 const fishing = (name) => `${name} is fishing`;
 
+
+console.log();
