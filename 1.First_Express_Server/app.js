@@ -1,6 +1,7 @@
 // import Express
 const { json } = require("express");
 const express = require("express");
+
 // const bodyParser = require('body-parser');
 
 // instantiated instance
@@ -35,29 +36,68 @@ app.get("/id", (req, res) => {
 app.post("/", (req, res) => {
     const i = 1;
     let LastBeerId = Data.length + i;
-    const CreateBeerId = '{"BeerId":' + LastBeerId + '}';
-    const NewBeer = JSON.parse(JSON.stringify(CreateBeerId)); 
-    const JsonBeer = NewBeer + "," + JSON.stringify(req.body); 
-    Data.push(JsonBeer);
+    const input = JSON.stringify(req.body);
+    const CreateBeerId = '{"BeerId":' + LastBeerId + ",";
+    const JsonBeer = JSON.parse(JSON.stringify(CreateBeerId)); 
+    const NewBeer = JsonBeer + input.replace("{", " "); 
+    Data.push(JSON.parse(NewBeer));
 
-    res.send('Beer added: ' + JsonBeer);
+    res.send('Beer added: ' + NewBeer);
     
 });
 
 // update beer by id
-app.get("/id", (req, res, BeerId) => {
-    BeerId = req.body;
+app.put("/id", (req, res) => {
+
+    // meaning "one or more digits"
+    let regExpression = /\d+/;
+
+
+    const Input = req.body;
+    let StringifyInput = JSON.stringify(Input);
+
+    // find the id of the beer
+    let OldBeerId = StringifyInput.match(regExpression);
+    let i = 1;
+    let BeerId = OldBeerId-i;
+
+    // find old beer data
+    let BeerInfo = JSON.stringify(Data[BeerId]);
+
+    // update beer
+    Data.splice(BeerId, 1, Input);
+
+
+     res.send('Beer type: ' + BeerInfo + " updated to: " + StringifyInput);
+     console.log(Data);
 
 });
 
-// delete beer
-app.delete("/", (req, res) =>{
+/* delete last beer
+app.delete("/", (req, res) => {
  
     beerId = req.body;
     Data.pop();
 
     res.send('Beer deleted!');
 });
+*/
+
+// delete beer by id
+app.delete("/id", (req, res) => {
+    
+    
+    let Input = req.body;
+    const ParsedId = parseInt(Input-1);
+    // find value of index
+    let BeerInfo = JSON.stringify(Data[ParsedId]);
+
+    // Delete beer
+    Data.splice(ParsedId, 1);
+    console.log(Data);
+    res.send(BeerInfo + ' deleted!');
+});
+
 
 // keep at the bottom of the file
 app.listen(8080);
