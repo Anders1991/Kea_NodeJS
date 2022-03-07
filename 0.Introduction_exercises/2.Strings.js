@@ -47,7 +47,7 @@ const fact = "You are learning javascript!";
 
 // capitalize the J in Javascript
 
-const replacement = fact.replace("javascript","Javascript");
+const replacement = fact.replace("j","J");
 
 console.log(replacement);
 // --------------------------------------
